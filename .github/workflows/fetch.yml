@@ -1,0 +1,34 @@
+name: Fetch Data Test
+
+# When to trigger the workflow
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to manually trigger the workflow from the Actions tab
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository (optional for an empty project)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Fetch data using curl
+      - name: Fetch data from API
+        run: |
+          echo "Fetching data..."
+          curl -s https://jsonplaceholder.typicode.com/posts/1 > response.json
+          echo "Fetched data:"
+          cat response.json
+
+      # Test that the data was fetched correctly
+      - name: Verify fetched data
+        run: |
+          if grep -q '"id": 1' response.json; then
+            echo "Data fetched successfully!"
+          else
+            echo "Failed to fetch data."
+            exit 1
